@@ -1,0 +1,99 @@
+using System;
+using static System.Console; // Підключити статичний клас System.Console
+
+namespace ConsoleApp2
+{
+  // Тема: Статичні методи та дані класу
+  // Нестатичний клас Point
+  class Point
+  {
+    // 1. Внутрішні поля класу Point
+    // координати точки
+    private double x;
+    private double y;
+
+    // кількість екземплярів класу Point - статичне поле
+    // якщо забрати public, то поле буде видиме тільки в межах класу
+    public static int count;
+
+    // 2. Статичний конструктор
+    //     - ініціалізує тільки статичні поля класу
+    //     - не може мати параметрів і модифікаторів доступу
+    //     - виконується тільки один раз
+    //     - викликається середовищем .NET
+    static Point()
+    {
+      count = 0;
+      // x = y = 0; - помилка, нестатичні поля класу не можна ініціалізувати в статичному конструкторі
+    }
+
+    // 3. Нестатичний конструктор - ініціалізує нестатичні поля класу
+    public Point()
+    {
+      x = y = 1.0;
+
+      // Конструктор викликається при створенні екземпляру класу Point,
+      // тому потрібно збільшити статичне поле на 1
+      count++;
+    }
+
+    // 4. Ще один нестатичний конструктор з двома параметрами
+    public Point (double x, double y)
+    {
+      this.x = x;
+      this.y = y;
+
+      // Конструктор викликається при створенні екземпляру класу Point,
+      // тому потрібно збільшити статичне поле на 1
+      Point.count++; // інший спосіб доступу до count
+    }
+
+    // 5. Методи доступу
+    public double GetX() { return x; }
+    public double GetY() { return y; }
+    public void SetX(double x) { this.x = x; }
+    public void SetY(double y) { this.y = y; }
+
+    // 6. Метод, що виводить поля класу
+    public void Print()
+    {
+      WriteLine("Fields of instance: ");
+      WriteLine("x = {0}, y = {1}", x, y);
+    }
+  }
+
+  class Program
+  {
+    static void Main(string[] args)
+    {
+      // 1. Оголосити декілька екземплярів класу
+      Point pt1 = new Point(); // одиночний екземпляр
+      Point pt2 = new Point(2, 3.5);
+
+      // 2. Вивести екземпляри класу
+      Write("Object pt1. ");
+      pt1.Print();
+      Write("Object pt2. ");
+      pt2.Print();
+
+      // 3. Вивести статичне поле Point.count
+      WriteLine($"Static field Point.count = {Point.count}"); // count = 2
+
+      // 4. Оголосити масив екземплярів
+      Point[] ptArray = new Point[5]; // створити масив посилань на Point
+
+      // 5. Вивести статичне поле Point.count ще раз
+      WriteLine($"Static field Point.count = {Point.count}"); // count = 2
+
+      // 6. Виділити пам'ять для кожного елементу масиву типу Point
+      for (int i=0; i<ptArray.Length; i++)
+      {
+        // при кожному виклику конструктора статичне поле count збільшується на 1
+        ptArray[i] = new Point(i, i * i);
+      }
+
+      // 7. Вивести значення Point.count - кількість створених екземплярів класу
+      WriteLine($"Static field Point.count = {Point.count}"); // count = 7
+    }
+  }
+}
